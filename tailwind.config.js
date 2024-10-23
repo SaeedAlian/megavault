@@ -36,8 +36,8 @@ const colors = {
     "foreground-dark": "hsl(var(--accent-foreground-dark))",
   },
   popover: {
-    DEFAULT: "hsl(var(--card))",
-    foreground: "hsl(var(--card-foreground))",
+    DEFAULT: "hsl(var(--popover))",
+    foreground: "hsl(var(--popover-foreground))",
   },
   card: {
     DEFAULT: "hsl(var(--card))",
