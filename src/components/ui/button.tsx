@@ -23,11 +23,11 @@ export const buttonVariants = cva(
 
         // Outlined
         "outlined-primary":
-          "border border-primary text-foreground hover:bg-primary/80 hover:text-primary-foreground",
+          "border border-primary text-primary hover:bg-primary/80 hover:text-primary-foreground",
         "outlined-secondary":
-          "border border-secondary text-foreground hover:bg-secondary/80 hover:text-secondary-foreground",
+          "border border-secondary text-secondary hover:bg-secondary/80 hover:text-secondary-foreground",
         "outlined-accent":
-          "border border-accent text-foreground hover:bg-accent/80 hover:text-accent-foreground",
+          "border border-accent text-accent hover:bg-accent/80 hover:text-accent-foreground",
 
         // Ghost
         "ghost-primary":
@@ -41,6 +41,7 @@ export const buttonVariants = cva(
         "link-primary": "text-primary hover:underline",
         "link-secondary": "text-secondary hover:underline",
         "link-accent": "text-accent hover:underline",
+        link: "text-foreground hover:underline hover:text-foreground/90",
 
         // Others
         muted: "bg-muted text-muted-foreground hover:bg-muted/80",
