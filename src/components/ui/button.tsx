@@ -66,7 +66,7 @@ export const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-  VariantProps<typeof buttonVariants> {
+    VariantProps<typeof buttonVariants> {
   asLink?: boolean;
   linkTarget?: React.HTMLAttributeAnchorTarget;
   linkHref?: string;
@@ -95,14 +95,25 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {asLink ? (
-          <>
-            <Link
-              className="top-0 left-0 right-0 bottom-0 absolute w-full h-full"
-              to={linkHref ?? ""}
-              target={linkTarget ? linkTarget : "_self"}
-            ></Link>
-            {children}
-          </>
+          linkHref != null && linkHref.startsWith("#") ? (
+            <>
+              <a
+                className="top-0 left-0 right-0 bottom-0 absolute w-full h-full"
+                href={linkHref ?? ""}
+                target={linkTarget ? linkTarget : "_self"}
+              ></a>
+              {children}
+            </>
+          ) : (
+            <>
+              <Link
+                className="top-0 left-0 right-0 bottom-0 absolute w-full h-full"
+                to={linkHref ?? ""}
+                target={linkTarget ? linkTarget : "_self"}
+              ></Link>
+              {children}
+            </>
+          )
         ) : (
           children
         )}
