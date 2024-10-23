@@ -63,6 +63,9 @@ export default {
       borderColor: {
         ...colors,
       },
+      backgroundImage: {
+        "home-background": "linear-gradient(116.82deg, #010A13, #021B34)",
+      },
       colors: {
         ...colors,
       },
