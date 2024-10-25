@@ -5,6 +5,9 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import RegisterSuccess from "./pages/register-success";
 import AccountVerificationSuccess from "./pages/account-verification-success";
+import ForgotPassword from "./pages/forgot-password";
+import ResetPassword from "./pages/reset-password";
+import ResetPasswordSuccess from "./pages/reset-password-success";
 
 import "./App.css";
 
@@ -28,6 +31,18 @@ const router = createBrowserRouter([
   {
     path: "/account-verification-success",
     element: <AccountVerificationSuccess />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
+  },
+  {
+    path: "/reset-password-success",
+    element: <ResetPasswordSuccess />,
   },
 ]);
 
