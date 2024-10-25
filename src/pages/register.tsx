@@ -22,7 +22,7 @@ type FormData = {
 const MAX_PAGE = 3;
 
 function Register() {
-  const [page, setPage] = useState<number>(3);
+  const [page, setPage] = useState<number>(1);
   const [formData, setFormData] = useState<FormData>({} as FormData);
 
   const onChangePage = (page: number) => {
@@ -97,6 +97,7 @@ function FirstPage({
 
       <Input
         required
+        autoFocus
         label="First Name"
         type="text"
         variant="contained-primary"
@@ -178,6 +179,7 @@ function SecondPage({
 
       <Input
         required
+        autoFocus
         label="Email"
         type="email"
         variant="contained-primary"
@@ -254,6 +256,7 @@ function ThirdPage({
 
       <Input
         required
+        autoFocus
         label="Password"
         type="password"
         variant="contained-primary"

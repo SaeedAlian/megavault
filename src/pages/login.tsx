@@ -39,6 +39,7 @@ function Login() {
 
           <Input
             required
+            autoFocus
             label="Username (or email)"
             type="text"
             variant="contained-primary"
