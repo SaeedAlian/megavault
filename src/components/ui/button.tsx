@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { ButtonHTMLAttributes, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { cva, type VariantProps } from "class-variance-authority";
 
@@ -65,8 +65,8 @@ export const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+  VariantProps<typeof buttonVariants> {
   asLink?: boolean;
   linkTarget?: React.HTMLAttributeAnchorTarget;
   linkHref?: string;
