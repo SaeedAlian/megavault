@@ -53,16 +53,14 @@ const BlogPagination = forwardRef<HTMLDivElement, BlogCardProps>(
         className="flex flex-wrap justify-evenly items-center gap-5"
       >
         {allPages.slice(displayStartIndex, displayEndIndex).map((i) => (
-          <>
-            <Button
-              key={`blog-pagination-${i}`}
-              onClick={() => onChange(i)}
-              variant={currentPage === i ? "contained-primary" : "muted"}
-              className={cn(currentPage === i ? "hover:bg-primary" : "")}
-            >
-              {i}
-            </Button>
-          </>
+          <Button
+            key={`blog-pagination-${i}`}
+            onClick={() => onChange(i)}
+            variant={currentPage === i ? "contained-primary" : "muted"}
+            className={cn(currentPage === i ? "hover:bg-primary" : "")}
+          >
+            {i}
+          </Button>
         ))}
       </div>
     );
