@@ -1,15 +1,22 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Button } from "../components/ui";
 
 import icon from "../assets/svgs/register-success-icon.svg";
 
 function AccountVerificationSuccess() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [token, setToken] = useState<string>("");
 
   useEffect(() => {
+    const token = searchParams.get("token");
+
+    if (token == null || token.length === 0) {
+      navigate("/");
+    }
+
     setToken(searchParams.get("token") ?? "");
   }, []);
 
