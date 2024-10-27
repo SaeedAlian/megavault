@@ -1,0 +1,35 @@
+package api
+
+import (
+	"database/sql"
+	"log"
+	"net/http"
+
+	"github.com/gorilla/mux"
+
+	"megavault/api/services/user"
+)
+
+type Server struct {
+	addr string
+	db   *sql.DB
+}
+
+func NewServer(addr string, db *sql.DB) *Server {
+	return &Server{
+		addr: addr,
+		db:   db,
+	}
+}
+
+func (s *Server) Run() error {
+	router := mux.NewRouter()
+	subrouter := router.PathPrefix("/api/v1").Subrouter()
+
+	userService := user.NewHandler()
+	userService.RegisterRoutes(subrouter)
+
+	log.Println("API Listening on ", s.addr)
+
+	return http.ListenAndServe(s.addr, router)
+}
