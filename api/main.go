@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"megavault/api/cmd/api"
+	"megavault/api/api"
 )
 
 func main() {
