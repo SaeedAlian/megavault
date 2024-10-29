@@ -1,11 +1,11 @@
 build:
-	@go build -o bin/ecom main.go
+	@go build -o bin/megavaultapi main.go
 
 test:
 	@go test -v ./...
 	
 run: build
-	@./bin/ecom
+	@./bin/megavaultapi
 
 migration:
 	@migrate create -ext sql -dir db/migrate/migrations -seq $(filter-out $@,$(MAKECMDGOALS))
