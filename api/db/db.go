@@ -19,7 +19,5 @@ func NewPGSQLStorage() (*sql.DB, error) {
 		config.Env.DBName,
 	)
 
-	print(conninfo, "\n")
-
 	return sql.Open("postgres", conninfo)
 }
