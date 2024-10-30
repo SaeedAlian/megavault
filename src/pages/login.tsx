@@ -7,7 +7,7 @@ import logo from "../assets/images/logo.webp";
 import { Button, Input } from "../components/ui";
 
 type FormData = {
-  username: string;
+  usernameOrEmail: string;
   password: string;
 };
 
@@ -46,7 +46,7 @@ function Login() {
             placeholder="JohnDoe"
             Icon={FaUser}
             containerClassName="mb-6 w-full"
-            name="username"
+            name="usernameOrEmail"
             onChange={(e) => {
               onChangeData(e.target.name, e.target.value);
             }}
