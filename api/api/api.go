@@ -28,7 +28,8 @@ func (s *Server) Run() error {
 
 	userSubrouter := subrouter.PathPrefix("/user").Subrouter()
 
-	userService := user.NewHandler()
+	userStore := user.NewStore(s.db)
+	userService := user.NewHandler(userStore)
 	userService.RegisterRoutes(userSubrouter)
 
 	log.Println("API Listening on ", s.addr)
