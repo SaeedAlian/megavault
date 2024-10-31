@@ -3,6 +3,7 @@ package user
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
@@ -47,9 +48,9 @@ func (h *Handler) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	usernameOrEmail := strings.ToLower(credentials.UsernameOrEmail)
 	user, err := h.store.GetUserByUsernameOrEmail(
-		credentials.UsernameOrEmail,
-		credentials.UsernameOrEmail,
+		usernameOrEmail, usernameOrEmail,
 	)
 	if err != nil || user == nil {
 		utils.WriteErrorInResponse(w, http.StatusBadRequest, "Invalid credentials")
@@ -109,8 +110,8 @@ func (h *Handler) register(w http.ResponseWriter, r *http.Request) {
 	created_user, err := h.store.CreateUser(types_user.RegisterUserPayload{
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
-		Username:  user.Username,
-		Email:     user.Email,
+		Username:  strings.ToLower(user.Username),
+		Email:     strings.ToLower(user.Email),
 		Password:  hashedPassword,
 	})
 	if err != nil {
@@ -129,7 +130,7 @@ func (h *Handler) getUsers(w http.ResponseWriter, r *http.Request) {
 	usernameQuery := r.URL.Query().Get("username")
 
 	query := types_user.SearchUserQuery{
-		Username: usernameQuery,
+		Username: strings.ToLower(usernameQuery),
 	}
 
 	users, err := h.store.GetUsers(query)
