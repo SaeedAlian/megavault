@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"reflect"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -23,7 +22,8 @@ func WithJWTAuth(handler http.HandlerFunc, store types_user.UserStore) http.Hand
 	return func(w http.ResponseWriter, r *http.Request) {
 		tokenStr := r.Header.Get("Authorization")
 
-		claims, token, err := ValidateJWT[*types_user.UserJWTClaims](tokenStr)
+		claims := types_user.UserJWTClaims{}
+		token, err := ValidateJWT(tokenStr, &claims)
 		if err != nil {
 			log.Printf("failed to validate token: %v", err)
 			utils.WriteErrorInResponse(w, http.StatusUnauthorized, "Failed to validate token")
@@ -76,9 +76,7 @@ func GenerateJWT(claims jwt.MapClaims, expiresAtInMinutes float64) (string, erro
 	return tokenStr, nil
 }
 
-func ValidateJWT[T JWTClaims](tokenString string) (T, *jwt.Token, error) {
-	claims := reflect.New(reflect.TypeOf((*T)(nil)).Elem()).Interface().(T)
-
+func ValidateJWT[T JWTClaims](tokenString string, claims T) (*jwt.Token, error) {
 	parsed, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -87,14 +85,14 @@ func ValidateJWT[T JWTClaims](tokenString string) (T, *jwt.Token, error) {
 		return []byte(config.Env.JWTSecret), nil
 	})
 	if err != nil {
-		return claims, nil, err
+		return nil, err
 	}
 
 	mapClaims := parsed.Claims.(jwt.MapClaims)
 
 	if err := claims.PopulateFromToken(mapClaims); err != nil {
-		return claims, nil, err
+		return nil, err
 	}
 
-	return claims, parsed, nil
+	return parsed, nil
 }
