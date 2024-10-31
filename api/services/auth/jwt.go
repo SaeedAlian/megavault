@@ -53,8 +53,8 @@ func WithJWTAuth(handler http.HandlerFunc, store types_user.UserStore) http.Hand
 	}
 }
 
-func GenerateJWT(claims jwt.MapClaims, expiresAtInMinutes int) (string, error) {
-	expiration := time.Second * time.Duration(expiresAtInMinutes*60)
+func GenerateJWT(claims jwt.MapClaims, expiresAtInMinutes float64) (string, error) {
+	expiration := time.Minute * time.Duration(expiresAtInMinutes)
 
 	tokenClaims := jwt.MapClaims{}
 
@@ -62,7 +62,7 @@ func GenerateJWT(claims jwt.MapClaims, expiresAtInMinutes int) (string, error) {
 		tokenClaims[k] = v
 	}
 
-	tokenClaims["expiresAt"] = time.Now().Add(expiration).Unix()
+	tokenClaims["exp"] = time.Now().UTC().Add(expiration).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
 

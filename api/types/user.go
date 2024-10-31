@@ -51,6 +51,6 @@ type UserJWTClaims struct {
 
 func (c *UserJWTClaims) PopulateFromToken(claims jwt.MapClaims) error {
 	c.UserId = claims["userId"].(string)
-	c.ExpiresAt = int64(claims["expiresAt"].(float64))
+	c.ExpiresAt = int64(claims["exp"].(float64))
 	return nil
 }
