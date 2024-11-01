@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"megavault/api/services/blog"
 	"megavault/api/services/user"
 )
 
@@ -27,10 +28,15 @@ func (s *Server) Run() error {
 	subrouter := router.PathPrefix("/api/v1").Subrouter()
 
 	userSubrouter := subrouter.PathPrefix("/user").Subrouter()
+	blogSubrouter := subrouter.PathPrefix("/blog").Subrouter()
 
 	userStore := user.NewStore(s.db)
 	userService := user.NewHandler(userStore)
 	userService.RegisterRoutes(userSubrouter)
+
+	blogStore := blog.NewStore(s.db)
+	blogService := blog.NewHandler(blogStore, userStore)
+	blogService.RegisterRoutes(blogSubrouter)
 
 	log.Println("API Listening on ", s.addr)
 
