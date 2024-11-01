@@ -17,7 +17,7 @@ func NewStore(db *sql.DB) *Store {
 
 func (s *Store) CreateUser(user types_user.RegisterUserPayload) (*types_user.User, error) {
 	_, err := s.db.Exec(
-		"INSERT INTO users (firstname, lastname, username, email, password) VALUES (?, ?, ?, ?, ?)",
+		"INSERT INTO users (firstname,lastname,username,email,password) VALUES ($1,$2,$3,$4,$5);",
 		user.FirstName,
 		user.LastName,
 		user.Username,
@@ -37,7 +37,10 @@ func (s *Store) CreateUser(user types_user.RegisterUserPayload) (*types_user.Use
 }
 
 func (s *Store) GetUsers(query types_user.SearchUserQuery) ([]types_user.User, error) {
-	rows, err := s.db.Query("SELECT * FROM users WHERE username LIKE '%?%'", query.Username)
+	rows, err := s.db.Query(
+		"SELECT * FROM users WHERE username LIKE $1;",
+		fmt.Sprintf("%%%s%%", query.Username),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +60,7 @@ func (s *Store) GetUsers(query types_user.SearchUserQuery) ([]types_user.User, e
 }
 
 func (s *Store) GetUserById(id string) (*types_user.User, error) {
-	rows, err := s.db.Query("SELECT * FROM users WHERE id = ?", id)
+	rows, err := s.db.Query("SELECT * FROM users WHERE id = $1;", id)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +82,7 @@ func (s *Store) GetUserById(id string) (*types_user.User, error) {
 }
 
 func (s *Store) GetUserByUsername(username string) (*types_user.User, error) {
-	rows, err := s.db.Query("SELECT * FROM users WHERE username = ?", username)
+	rows, err := s.db.Query("SELECT * FROM users WHERE username = $1;", username)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +104,7 @@ func (s *Store) GetUserByUsername(username string) (*types_user.User, error) {
 }
 
 func (s *Store) GetUserByEmail(email string) (*types_user.User, error) {
-	rows, err := s.db.Query("SELECT * FROM users WHERE email = ?", email)
+	rows, err := s.db.Query("SELECT * FROM users WHERE email = $1;", email)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +126,11 @@ func (s *Store) GetUserByEmail(email string) (*types_user.User, error) {
 }
 
 func (s *Store) GetUserByUsernameOrEmail(username string, email string) (*types_user.User, error) {
-	rows, err := s.db.Query("SELECT * FROM users WHERE username = ? OR email = ?", username, email)
+	rows, err := s.db.Query(
+		"SELECT * FROM users WHERE username = $1 OR email = $2;",
+		username,
+		email,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +152,7 @@ func (s *Store) GetUserByUsernameOrEmail(username string, email string) (*types_
 }
 
 func (s *Store) DeleteUserById(id string) error {
-	_, err := s.db.Exec("DELETE FROM users WHERE id = ?", id)
+	_, err := s.db.Exec("DELETE FROM users WHERE id = $1;", id)
 	if err != nil {
 		return err
 	}
@@ -154,7 +161,7 @@ func (s *Store) DeleteUserById(id string) error {
 }
 
 func (s *Store) DeleteUserByUsername(username string) error {
-	_, err := s.db.Exec("DELETE FROM users WHERE username = ?", username)
+	_, err := s.db.Exec("DELETE FROM users WHERE username = $1;", username)
 	if err != nil {
 		return err
 	}
