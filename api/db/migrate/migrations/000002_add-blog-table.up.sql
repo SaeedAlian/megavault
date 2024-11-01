@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS blogs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title VARCHAR(255) NOT NULL,
+  description VARCHAR(2047) NOT NULL,
+  slug VARCHAR(255) NOT NULL UNIQUE,
+  pictureName VARCHAR(255) NOT NULL,
+  mdFilename VARCHAR(255) NOT NULL,
+  createdAt TIMESTAMP DEFAULT NOW(),
+  updatedAt TIMESTAMP DEFAULT NOW()
+);
