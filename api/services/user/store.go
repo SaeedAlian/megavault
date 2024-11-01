@@ -16,19 +16,20 @@ func NewStore(db *sql.DB) *Store {
 }
 
 func (s *Store) CreateUser(user types_user.RegisterUserPayload) (*types_user.User, error) {
-	_, err := s.db.Exec(
-		"INSERT INTO users (firstname,lastname,username,email,password) VALUES ($1,$2,$3,$4,$5);",
+	rowId := ""
+	err := s.db.QueryRow(
+		"INSERT INTO users (firstname,lastname,username,email,password) VALUES ($1,$2,$3,$4,$5) RETURNING id;",
 		user.FirstName,
 		user.LastName,
 		user.Username,
 		user.Email,
 		user.Password,
-	)
+	).Scan(&rowId)
 	if err != nil {
 		return nil, err
 	}
 
-	u, err := s.GetUserByUsername(user.Username)
+	u, err := s.GetUserById(rowId)
 	if err != nil || u == nil {
 		return nil, err
 	}
