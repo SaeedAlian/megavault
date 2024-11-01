@@ -8,14 +8,15 @@ import (
 )
 
 type Config struct {
-	Host       string
-	Port       string
-	DBHost     string
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBPort     string
-	JWTSecret  string
+	Host           string
+	Port           string
+	DBHost         string
+	DBUser         string
+	DBPassword     string
+	DBName         string
+	DBPort         string
+	JWTSecret      string
+	UploadsRootDir string
 }
 
 var Env = InitConfig()
@@ -24,14 +25,15 @@ func InitConfig() Config {
 	godotenv.Load()
 
 	return Config{
-		Host:       getEnv("HOST", "http://localhost"),
-		Port:       getEnv("PORT", "8080"),
-		DBUser:     getEnv("DB_USER", "postgres"),
-		DBHost:     getEnv("DB_HOST", "localhost"),
-		DBPassword: getEnv("DB_PASSWORD", "postgres"),
-		DBName:     getEnv("DB_NAME", "postgres"),
-		DBPort:     getEnv("DB_PORT", "5432"),
-		JWTSecret:  getEnv("JWT_SECRET", "secret"),
+		Host:           getEnv("HOST", "http://localhost"),
+		Port:           getEnv("PORT", "8080"),
+		DBUser:         getEnv("DB_USER", "postgres"),
+		DBHost:         getEnv("DB_HOST", "localhost"),
+		DBPassword:     getEnv("DB_PASSWORD", "postgres"),
+		DBName:         getEnv("DB_NAME", "postgres"),
+		DBPort:         getEnv("DB_PORT", "5432"),
+		JWTSecret:      getEnv("JWT_SECRET", "secret"),
+		UploadsRootDir: getEnv("UPLOADS_ROOT_DIR", "uploads"),
 	}
 }
 
