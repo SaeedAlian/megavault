@@ -172,7 +172,7 @@ func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u, err := h.store.GetUserById(userId)
-	if err != nil {
+	if err != nil || u == nil {
 		utils.WriteErrorInResponse(
 			w,
 			http.StatusNotFound,
