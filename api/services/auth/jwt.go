@@ -10,7 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 
 	"megavault/api/config"
-	types_user "megavault/api/types"
+	"megavault/api/types/user"
 	"megavault/api/utils"
 )
 

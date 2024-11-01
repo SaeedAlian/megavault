@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"megavault/api/services/auth"
-	types_user "megavault/api/types"
+	"megavault/api/types/user"
 	"megavault/api/utils"
 )
 

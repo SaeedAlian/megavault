@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	types_user "megavault/api/types"
+	"megavault/api/types/user"
 )
 
 type Store struct {
