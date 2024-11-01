@@ -9,6 +9,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 
+	"megavault/api/config"
 	"megavault/api/services/auth"
 	"megavault/api/types/blog"
 	"megavault/api/types/user"
@@ -16,21 +17,42 @@ import (
 )
 
 type Handler struct {
-	store     types_blog.BlogStore
-	userStore types_user.UserStore
+	store           types_blog.BlogStore
+	userStore       types_user.UserStore
+	mdFileUploadDir string
+	imageUploadDir  string
 }
 
 func NewHandler(store types_blog.BlogStore, userStore types_user.UserStore) *Handler {
 	return &Handler{
-		store:     store,
-		userStore: userStore,
+		store:           store,
+		userStore:       userStore,
+		mdFileUploadDir: fmt.Sprintf("%s/blogs/mds", config.Env.UploadsRootDir),
+		imageUploadDir:  fmt.Sprintf("%s/blogs/images", config.Env.UploadsRootDir),
 	}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
+	blogMdUploadHandler := utils.FileUploadHandler(
+		"mdFile",
+		5,
+		[]string{"text/markdown"},
+		h.mdFileUploadDir,
+	)
+
+	blogImageUploadHandler := utils.FileUploadHandler(
+		"image",
+		3,
+		[]string{"image/jpeg", "image/png", "image/jpg", "image/webp"},
+		h.imageUploadDir,
+	)
+
 	router.HandleFunc("/", auth.WithJWTAuth(h.getBlogs, h.userStore)).Methods("GET")
 	router.HandleFunc("/{slug}", auth.WithJWTAuth(h.getBlog, h.userStore)).Methods("GET")
 	router.HandleFunc("/", auth.WithJWTAuth(h.createBlog, h.userStore)).Methods("POST")
+	router.HandleFunc("/md", auth.WithJWTAuth(blogMdUploadHandler, h.userStore)).Methods("POST")
+	router.HandleFunc("/image", auth.WithJWTAuth(blogImageUploadHandler, h.userStore)).
+		Methods("POST")
 	router.HandleFunc("/{id}", auth.WithJWTAuth(h.updateBlog, h.userStore)).Methods("PATCH")
 	router.HandleFunc("/{id}", auth.WithJWTAuth(h.deleteBlog, h.userStore)).Methods("DELETE")
 }
@@ -59,6 +81,46 @@ func (h *Handler) createBlog(w http.ResponseWriter, r *http.Request) {
 			w,
 			http.StatusBadRequest,
 			"Another blog with that title already exists",
+		)
+		return
+	}
+
+	isMdExists, err := utils.PathExists(fmt.Sprintf("%s/%s", h.mdFileUploadDir, payload.MDFilename))
+	if err != nil {
+		utils.WriteErrorInResponse(
+			w,
+			http.StatusInternalServerError,
+			"An error occurred",
+		)
+		return
+	}
+
+	if !isMdExists {
+		utils.WriteErrorInResponse(
+			w,
+			http.StatusBadRequest,
+			"MD file doesn't exist, please make sure to upload it first",
+		)
+		return
+	}
+
+	isPictureExists, err := utils.PathExists(
+		fmt.Sprintf("%s/%s", h.imageUploadDir, payload.PictureName),
+	)
+	if err != nil {
+		utils.WriteErrorInResponse(
+			w,
+			http.StatusInternalServerError,
+			"An error occurred",
+		)
+		return
+	}
+
+	if !isPictureExists {
+		utils.WriteErrorInResponse(
+			w,
+			http.StatusBadRequest,
+			"Picture file doesn't exist, please make sure to upload it first",
 		)
 		return
 	}
@@ -202,6 +264,56 @@ func (h *Handler) updateBlog(w http.ResponseWriter, r *http.Request) {
 
 	if payload.Description != "" {
 		updatePayload.Description = payload.Description
+	}
+
+	if payload.PictureName != "" {
+		isPictureExists, err := utils.PathExists(
+			fmt.Sprintf("%s/%s", h.imageUploadDir, payload.PictureName),
+		)
+		if err != nil {
+			utils.WriteErrorInResponse(
+				w,
+				http.StatusInternalServerError,
+				"An error occurred",
+			)
+			return
+		}
+
+		if !isPictureExists {
+			utils.WriteErrorInResponse(
+				w,
+				http.StatusBadRequest,
+				"Picture file doesn't exist, please make sure to upload it first",
+			)
+			return
+		}
+
+		updatePayload.PictureName = payload.PictureName
+	}
+
+	if payload.MDFilename != "" {
+		isMdExists, err := utils.PathExists(
+			fmt.Sprintf("%s/%s", h.mdFileUploadDir, payload.MDFilename),
+		)
+		if err != nil {
+			utils.WriteErrorInResponse(
+				w,
+				http.StatusInternalServerError,
+				"An error occurred",
+			)
+			return
+		}
+
+		if !isMdExists {
+			utils.WriteErrorInResponse(
+				w,
+				http.StatusBadRequest,
+				"MD file doesn't exist, please make sure to upload it first",
+			)
+			return
+		}
+
+		updatePayload.MDFilename = payload.MDFilename
 	}
 
 	if err := h.store.UpdateBlog(b.Id, updatePayload); err != nil {
