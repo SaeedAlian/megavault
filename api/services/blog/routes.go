@@ -9,7 +9,6 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 
-	"megavault/api/config"
 	"megavault/api/services/auth"
 	"megavault/api/types/blog"
 	"megavault/api/types/user"
@@ -23,23 +22,31 @@ type Handler struct {
 	imageUploadDir  string
 }
 
-func NewHandler(store types_blog.BlogStore, userStore types_user.UserStore) *Handler {
+func NewHandler(
+	store types_blog.BlogStore,
+	userStore types_user.UserStore,
+	mdFileUploadDir string,
+	imageUploadDir string,
+) *Handler {
 	return &Handler{
 		store:           store,
 		userStore:       userStore,
-		mdFileUploadDir: fmt.Sprintf("%s/blogs/mds", config.Env.UploadsRootDir),
-		imageUploadDir:  fmt.Sprintf("%s/blogs/images", config.Env.UploadsRootDir),
+		mdFileUploadDir: mdFileUploadDir,
+		imageUploadDir:  imageUploadDir,
 	}
 }
 
 func (h *Handler) RegisterRoutes(router *mux.Router) {
-	blogMdUploadHandler := utils.FileUploadHandler(
-		"mdFile",
-		5,
-		[]string{"text/markdown"},
-		h.mdFileUploadDir,
-	)
+	router.HandleFunc("/", auth.WithJWTAuth(h.getBlogs, h.userStore)).Methods("GET")
+	router.HandleFunc("/{slug}", auth.WithJWTAuth(h.getBlog, h.userStore)).Methods("GET")
+	router.HandleFunc("/", auth.WithJWTAuth(h.createBlog, h.userStore)).Methods("POST")
+	router.HandleFunc("/md", auth.WithJWTAuth(h.uploadMdFile(), h.userStore)).Methods("POST")
+	router.HandleFunc("/image", auth.WithJWTAuth(h.uploadImage(), h.userStore)).Methods("POST")
+	router.HandleFunc("/{id}", auth.WithJWTAuth(h.updateBlog, h.userStore)).Methods("PATCH")
+	router.HandleFunc("/{id}", auth.WithJWTAuth(h.deleteBlog, h.userStore)).Methods("DELETE")
+}
 
+func (h *Handler) uploadImage() http.HandlerFunc {
 	blogImageUploadHandler := utils.FileUploadHandler(
 		"image",
 		3,
@@ -47,14 +54,18 @@ func (h *Handler) RegisterRoutes(router *mux.Router) {
 		h.imageUploadDir,
 	)
 
-	router.HandleFunc("/", auth.WithJWTAuth(h.getBlogs, h.userStore)).Methods("GET")
-	router.HandleFunc("/{slug}", auth.WithJWTAuth(h.getBlog, h.userStore)).Methods("GET")
-	router.HandleFunc("/", auth.WithJWTAuth(h.createBlog, h.userStore)).Methods("POST")
-	router.HandleFunc("/md", auth.WithJWTAuth(blogMdUploadHandler, h.userStore)).Methods("POST")
-	router.HandleFunc("/image", auth.WithJWTAuth(blogImageUploadHandler, h.userStore)).
-		Methods("POST")
-	router.HandleFunc("/{id}", auth.WithJWTAuth(h.updateBlog, h.userStore)).Methods("PATCH")
-	router.HandleFunc("/{id}", auth.WithJWTAuth(h.deleteBlog, h.userStore)).Methods("DELETE")
+	return blogImageUploadHandler
+}
+
+func (h *Handler) uploadMdFile() http.HandlerFunc {
+	blogMdUploadHandler := utils.FileUploadHandler(
+		"mdFile",
+		5,
+		[]string{"text/markdown"},
+		h.mdFileUploadDir,
+	)
+
+	return blogMdUploadHandler
 }
 
 func (h *Handler) createBlog(w http.ResponseWriter, r *http.Request) {
