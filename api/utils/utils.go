@@ -109,24 +109,44 @@ func FileUploadHandler(
 			return
 		}
 
-		mimeType := mimetype.Detect(buf)
+		mimeTypeFromHandler := handler.Header.Get("Content-Type")
+		mimeTypeFromMTLib := mimetype.Detect(buf).String()
+
+		typeFound := false
 
 		for i := range mimeTypes {
 			m := mimeTypes[i]
 
-			if mimeType.String() != m {
-				allowedMimeTypesString := strings.Join(mimeTypes, " , ")
-				WriteErrorInResponse(
-					w,
-					http.StatusBadRequest,
-					fmt.Sprintf(
-						"Cannot upload %s file, please upload only %s files",
-						mimeType,
-						allowedMimeTypesString,
-					),
-				)
-				return
+			if mimeTypeFromHandler == m || mimeTypeFromMTLib == m {
+				typeFound = true
 			}
+		}
+
+		if !typeFound {
+			allowedMimeTypesString := strings.Join(mimeTypes, " , ")
+			errMsg := ""
+
+			if mimeTypeFromHandler == mimeTypeFromMTLib {
+				errMsg = fmt.Sprintf(
+					"Cannot upload %s file, please upload only %s files",
+					mimeTypeFromHandler,
+					allowedMimeTypesString,
+				)
+			} else {
+				errMsg = fmt.Sprintf(
+					"Cannot upload %s/%s file, please upload only %s files",
+					mimeTypeFromHandler,
+					mimeTypeFromMTLib,
+					allowedMimeTypesString,
+				)
+			}
+
+			WriteErrorInResponse(
+				w,
+				http.StatusBadRequest,
+				errMsg,
+			)
+			return
 		}
 
 		_, err = file.Seek(0, io.SeekStart)
