@@ -14,8 +14,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"megavault/api/services/auth"
-	"megavault/api/types/user"
+	"github.com/SaeedAlian/megavault/api/services/auth"
+	"github.com/SaeedAlian/megavault/api/types/user"
 )
 
 func TestUserService(t *testing.T) {

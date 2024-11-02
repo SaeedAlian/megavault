@@ -8,9 +8,9 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"megavault/api/config"
-	"megavault/api/services/blog"
-	"megavault/api/services/user"
+	"github.com/SaeedAlian/megavault/api/config"
+	"github.com/SaeedAlian/megavault/api/services/blog"
+	"github.com/SaeedAlian/megavault/api/services/user"
 )
 
 type Server struct {

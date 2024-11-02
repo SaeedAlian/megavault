@@ -14,9 +14,9 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"megavault/api/types/blog"
-	"megavault/api/types/user"
-	"megavault/api/utils"
+	"github.com/SaeedAlian/megavault/api/types/blog"
+	"github.com/SaeedAlian/megavault/api/types/user"
+	"github.com/SaeedAlian/megavault/api/utils"
 )
 
 func TestBlogService(t *testing.T) {

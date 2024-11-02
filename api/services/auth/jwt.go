@@ -9,9 +9,9 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 
-	"megavault/api/config"
-	"megavault/api/types/user"
-	"megavault/api/utils"
+	"github.com/SaeedAlian/megavault/api/config"
+	"github.com/SaeedAlian/megavault/api/types/user"
+	"github.com/SaeedAlian/megavault/api/utils"
 )
 
 type JWTClaims interface {

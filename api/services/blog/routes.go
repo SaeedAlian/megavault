@@ -9,10 +9,10 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 
-	"megavault/api/services/auth"
-	"megavault/api/types/blog"
-	"megavault/api/types/user"
-	"megavault/api/utils"
+	"github.com/SaeedAlian/megavault/api/services/auth"
+	"github.com/SaeedAlian/megavault/api/types/blog"
+	"github.com/SaeedAlian/megavault/api/types/user"
+	"github.com/SaeedAlian/megavault/api/utils"
 )
 
 type Handler struct {

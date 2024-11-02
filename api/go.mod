@@ -1,4 +1,4 @@
-module megavault/api
+module github.com/SaeedAlian/megavault/api
 
 go 1.23.2
 

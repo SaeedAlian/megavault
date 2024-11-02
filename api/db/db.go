@@ -6,7 +6,7 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"megavault/api/config"
+	"github.com/SaeedAlian/megavault/api/config"
 )
 
 func NewPGSQLStorage() (*sql.DB, error) {

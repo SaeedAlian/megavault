@@ -9,7 +9,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
 
-	"megavault/api/db"
+	"github.com/SaeedAlian/megavault/api/db"
 )
 
 func main() {

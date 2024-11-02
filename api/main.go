@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"megavault/api/api"
-	"megavault/api/config"
-	"megavault/api/db"
+	"github.com/SaeedAlian/megavault/api/api"
+	"github.com/SaeedAlian/megavault/api/config"
+	"github.com/SaeedAlian/megavault/api/db"
 )
 
 func main() {

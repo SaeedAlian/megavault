@@ -9,9 +9,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
 
-	"megavault/api/services/auth"
-	"megavault/api/types/user"
-	"megavault/api/utils"
+	"github.com/SaeedAlian/megavault/api/services/auth"
+	"github.com/SaeedAlian/megavault/api/types/user"
+	"github.com/SaeedAlian/megavault/api/utils"
 )
 
 type Handler struct {
