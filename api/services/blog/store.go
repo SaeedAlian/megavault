@@ -39,7 +39,7 @@ func (s *Store) CreateBlog(blog types_blog.CreateBlogPayload) (*types_blog.Blog,
 
 func (s *Store) GetBlogs(query types_blog.SearchBlogQuery) ([]types_blog.Blog, error) {
 	rows, err := s.db.Query(
-		"SELECT * FROM blogs WHERE title LIKE $1 OR description LIKE $2;",
+		"SELECT * FROM blogs WHERE title ILIKE $1 OR description ILIKE $2;",
 		fmt.Sprintf("%%%s%%", query.Keyword),
 		fmt.Sprintf("%%%s%%", query.Keyword),
 	)
